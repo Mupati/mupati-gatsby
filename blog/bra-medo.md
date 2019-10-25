@@ -1,5 +1,5 @@
 ---
-path: crosslines
+path: blog
 date: 2019-10-25T02:14:19.945Z
 title: Bra Medo
 ---
