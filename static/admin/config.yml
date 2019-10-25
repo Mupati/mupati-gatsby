@@ -1,5 +1,6 @@
 backend:
-  name: mupati-gatsby
+  name: github
+  repo: mupati/mupati-gatsby
 
 media_folder: static/assets
 public_folder: assets
