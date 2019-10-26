@@ -10,20 +10,18 @@ const getPokemonData = names =>
     })
   )
 
-exports.createPages = async ({ actions: { createPage } }) => {
-  const allPokemon = await getPokemonData(["pikachu", "charizard", "squirtle"])
+exports.createPages = async ({ actions, graphql }) => {
+  const { createPage } = actions
 
-  // Create a page that lists Pokémon.
+  // Create a page that lists Pokémon
+  const allPokemon = await getPokemonData(["pikachu", "charizard", "squirtle"])
   createPage({
-    path: `/`,
+    path: `/pokemon`,
     component: require.resolve("./src/templates/all-pokemon.js"),
     context: { allPokemon },
   })
-}
 
-exports.createPages = async ({ actions, graphql }) => {
-  const { createPage } = actions
-  // pull in or use whatever data
+  // dogs data page
   const dogData = [
     {
       name: "Fido",
@@ -34,7 +32,6 @@ exports.createPages = async ({ actions, graphql }) => {
       breed: "Corgi",
     },
   ]
-
   dogData.forEach(dog => {
     createPage({
       path: `/dogs/${dog.name}`,
@@ -43,7 +40,7 @@ exports.createPages = async ({ actions, graphql }) => {
     })
   })
 
-  const result = await graphql(`
+  const posts = await graphql(`
     {
       allMarkdownRemark {
         edges {
@@ -56,21 +53,17 @@ exports.createPages = async ({ actions, graphql }) => {
       }
     }
   `)
-  if (result.errors) {
-    console.error(result.errors)
+  if (posts.errors) {
+    console.error(posts.error)
   }
-  result.data.allMarkdownRemark.edges.forEach(({ node }) => {
+  posts.data.allMarkdownRemark.edges.forEach(({ node }) => {
+    const { id, frontmatter } = node
     createPage({
-      path: node.frontmatter.path,
+      path: frontmatter.path,
       component: path.resolve(`src/templates/post.js`),
+      context: {
+        postId: id,
+      },
     })
-  })
-
-  const allPokemon = await getPokemonData(["pikachu", "charizard", "squirtle"])
-  // Create a page that lists Pokémon.
-  createPage({
-    path: `/pokemon`,
-    component: require.resolve("./src/templates/all-pokemon.js"),
-    context: { allPokemon },
   })
 }
