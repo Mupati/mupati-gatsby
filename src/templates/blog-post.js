@@ -1,7 +1,7 @@
 import React from "react"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
-import Image from "../components/image"
+// import Image from "../components/image"
 
 export default ({ data }) => {
   const post = data.markdownRemark
@@ -9,7 +9,10 @@ export default ({ data }) => {
     <Layout>
       <div>
         <h1>{post.frontmatter.title}</h1>
-        <Image />
+        <img
+          src={post.frontmatter.thumbnail}
+          alt={post.frontmatter.title}
+        />
         <div dangerouslySetInnerHTML={{ __html: post.html }} />
       </div>
     </Layout>
@@ -22,6 +25,7 @@ export const query = graphql`
       html
       frontmatter {
         title
+        thumbnail
       }
     }
   }

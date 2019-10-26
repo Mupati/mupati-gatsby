@@ -46,8 +46,16 @@ exports.createPages = async ({ actions, graphql }) => {
       allMarkdownRemark {
         edges {
           node {
+            html
+            fields {
+              slug
+            }
             frontmatter {
               path
+              title
+              thumbnail
+              excerpt
+              date
             }
           }
         }
@@ -59,39 +67,47 @@ exports.createPages = async ({ actions, graphql }) => {
   }
   posts.data.allMarkdownRemark.edges.forEach(({ node }) => {
     const { id, frontmatter } = node
-    createPage({
-      path: frontmatter.path,
-      component: path.resolve(`src/templates/post.js`),
-      context: {
-        postId: id,
-      },
-    })
+    if (node.fields.slug === "/my-first-post/") {
+      createPage({
+        path: frontmatter.path,
+        component: path.resolve(`src/templates/post.js`),
+        context: {
+          slug: node.fields.slug,
+        },
+      })
+    } else {
+      createPage({
+        path: `blog${node.fields.slug}`,
+        component: path.resolve(`./src/templates/blog-post.js`),
+        context: {
+          slug: node.fields.slug,
+        },
+      })
+    }
   })
 
-  const result = await graphql(`
-    query {
-      allMarkdownRemark {
-        edges {
-          node {
-            fields {
-              slug
-            }
-          }
-        }
-      }
-    }
-  `)
-  result.data.allMarkdownRemark.edges.forEach(({ node }) => {
-    createPage({
-      path: `blog${node.fields.slug}`,
-      component: path.resolve(`./src/templates/blog-post.js`),
-      context: {
-        // Data passed to context is available
-        // in page queries as GraphQL variables.
-        slug: node.fields.slug,
-      },
-    })
-  })
+  // const result = await graphql(`
+  //   query {
+  //     allMarkdownRemark {
+  //       edges {
+  //         node {
+  //           fields {
+  //             slug
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // `)
+  // result.data.allMarkdownRemark.edges.forEach(({ node }) => {
+  //   createPage({
+  //     path: `blog${node.fields.slug}`,
+  //     component: path.resolve(`./src/templates/blog-post.js`),
+  //     context: {
+  //       slug: node.fields.slug,
+  //     },
+  //   })
+  // })
 }
 
 exports.onCreateNode = ({ node, getNode, actions }) => {
