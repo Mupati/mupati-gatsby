@@ -2,7 +2,7 @@ import React from "react"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
 
-export default function Template({ data }) {
+export default function Post({ data }) {
   const { markdownRemark } = data // data.markdownRemark holds your post data
   const { frontmatter, html } = markdownRemark
   return (
@@ -20,8 +20,8 @@ export default function Template({ data }) {
 }
 
 export const pageQuery = graphql`
-  query {
-    markdownRemark(frontmatter: { path: { eq: "/my-first-post" } }) {
+  query($path: String!) {
+    markdownRemark(frontmatter: { path: { eq: $path } }) {
       html
       frontmatter {
         date(formatString: "MMMM DD, YYYY")

@@ -10,8 +10,11 @@ collections:
     label: Blog
     folder: src/pages/blog
     create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - { name: path, label: Path }
       - { name: date, label: Date, widget: datetime }
       - { name: title, label: Title }
+      - { name: excerpt, label: Excerpt }
+      - { label: "Featured Image", name: "thumbnail", widget: "image" }
       - { name: body, label: Body, widget: markdown }
